@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Divine Bhajan Playlist Player</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+  
+  <style>
+
+    * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+    /* === Reset & Root === */
+    :root {
+      --primary-clr: #e4e4e5;
+      --accent-clr: #eb0b0b;
+      --background-blur: rgba(28, 22, 37, 0.6);
+      --control-bg: rgba(163, 162, 164, 0.3);
+    }
+    * {
+      margin: 0; padding: 0;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman';
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 20px;
+      color: var(--primary-clr);
+    }
+    @keyframes slidein {
+      0%, 100% {
+        background-position: 20% 0%;
+        background-size: 3400px;
+      }
+      50% {
+        background-position: 100% 0%;
+        background-size: 2400px;
+      }
+    }
+
+    /* === Album Cover Slider === */
+    .album-cover {
+      width: 90vw;
+      max-width: 800px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .swiper {
+      width: 100%;
+      padding: 40px 0 80px;
+    }
+    .swiper-slide {
+      position: relative;
+      max-width: 220px;
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease-out;
+    }
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+      -webkit-box-reflect: below -5px linear-gradient(transparent, transparent, rgba(0,0,0,0.4));
+      transform-origin: center;
+      transform: perspective(800px);
+      transition: transform 0.3s ease-out;
+      user-select: none;
+      pointer-events: none;
+    }
+    .swiper-slide-active:hover img {
+      transform: perspective(800px) scale(1.05);
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: var(--background-blur);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      /* removed YouTube icon so keeping overlay hidden */
+      pointer-events: none;
+    }
+    .swiper-slide:hover .overlay,
+    .swiper-slide-active .overlay {
+      opacity: 0; /* keep overlay hidden as no icon */
+    }
+
+    /* === Music Player === */
+    .music-player {
+      width: 90vw;
+      max-width: 400px;
+      background: var(--background-blur);
+      border-radius: 20px;
+      padding: 25px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      user-select: none;
+    }
+    .music-player h1 {
+      font-weight: 600;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .music-player p {
+      font-weight: 400;
+      opacity: 0.7;
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+    }
+
+    /* Progress Bar */
+    #progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      appearance: none;
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      cursor: pointer;
+      margin-bottom: 32px;
+      -webkit-appearance: none;
+      transition: background 0.3s ease;
+    }
+    #progress:hover {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+    }
+    #progress::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-clr);
+      box-shadow: 0 6px 10px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #progress::-webkit-slider-thumb:hover,
+    #progress::-webkit-slider-thumb:focus {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      box-shadow: 0 0 12px var(--primary-clr);
+    }
+    /* Firefox thumb */
+    #progress::-moz-range-thumb {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-clr);
+      box-shadow: 0 6px 10px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #progress::-moz-range-thumb:hover,
+    #progress::-moz-range-thumb:focus {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      box-shadow: 0 0 12px var(--primary-clr);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+    .controls button {
+      width: 52px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: none;
+      background: var(--control-bg);
+      color: var(--primary-clr);
+      font-size: 1.3rem;
+      box-shadow: 0 10px 20px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .controls button:hover,
+    .controls button:focus-visible {
+      transform: scale(0.95);
+      outline: none;
+    }
+    .controls button.play-pause-btn {
+      font-size: 1.7rem;
+      background: var(--accent-clr);
+      box-shadow: 0 10px 30px rgba(235, 11, 11, 0.7);
+      color: white;
+      transform-origin: center;
+      transition: transform 0.25s ease;
+    }
+    .controls button.play-pause-btn:hover,
+    .controls button.play-pause-btn:focus-visible {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* === Glowing Divine Progress Bar === */
+#progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  appearance: none;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  box-shadow: 0 0 8px rgba(255, 183, 197, 0.7);
+  cursor: pointer;
+  margin-bottom: 32px;
+  -webkit-appearance: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress:hover {
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+}
+
+/* Webkit Slider Thumb (Chrome, Edge) */
+#progress::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #ffb3ba, 0 0 20px #ffb3ba;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px #ffd9e6, 0 0 30px #ffd9e6;
+}
+
+/* Firefox Thumb */
+#progress::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #ffb3ba, 0 0 20px #ffb3ba;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px #ffd9e6, 0 0 30px #ffd9e6;
+}
+
+.playlist-heading {
+  font-size: 3em;
+  font-weight: bold;
+  color: #ff4da6;
+  text-align: center;
+  text-shadow: 0 0 10px #ffb6c1, 0 0 20px #ff69b4;
+  animation: glow 2s ease-in-out infinite alternate;
+  margin-top: 60px;
+}
+
+.playlist-subtext {
+  font-size: 1.3em;
+  color: #c2185b;
+  text-align: center;
+  margin: 10px 20px;
+  line-height: 1.5;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 8px #ffb6c1, 0 0 16px #ff69b4;
+  }
+  to {
+    text-shadow: 0 0 16px #ff4da6, 0 0 24px #ff1493;
+  }
+}
+
+
+/* 🔧 Media Queries for better responsiveness */
+@media (max-width: 600px) {
+  .playlist-heading {
+    font-size: 2.1em;
+  }
+
+  .playlist-subtext {
+    font-size: 0.7em;
+  }
+}
+
+@media (max-width: 480px) {
+  .playlist-heading {
+    font-size: 1.9em;
+  }
+
+  .playlist-subtext {
+    font-size: 0.95em;
+  }
+  
+  .music-player {
+    width: 95vw;
+    padding: 20px;
+  }
+  .swiper-slide {
+    max-width: 140px;
+  }
+}
+    
+  </style>
+</head>
+<body style="background: linear-gradient(135deg, #fff1f1 0%, #ffd6e7 50%, #f0e6ff 100%); background-attachment: fixed;">
+
+  <h2 class="playlist-heading">Priya Playlist 💖🎶</h2>
+  <p class="playlist-subtext">
+    Every beat, every melody reminds me of you – your smile, your mischief, and every moment we shared growing up.
+  </p>
+  
+  <div class="album-cover">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <!-- Slides will be inserted dynamically by JS -->
+      </div>
+    </div>
+  </div>
+
+
+  <div class="music-player">
+    <h1 id="song-title">Loading...</h1>
+    <p id="artist-name">Please Wait</p>
+
+    <audio id="song" preload="metadata"></audio>
+    <input type="range" id="progress" value="0" min="0" step="0.01" />
+
+    <div class="controls">
+      <button class="backward" aria-label="Previous Song"><i class="fa-solid fa-backward"></i></button>
+      <button class="play-pause-btn" aria-label="Play/Pause"><i id="controlIcon" class="fa-solid fa-play"></i></button>
+      <button class="forward" aria-label="Next Song"><i class="fa-solid fa-forward"></i></button>
+    </div>
+  </div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    
+    const songs = [
+      {
+        title: "Mu To Bada Deulara Para",
+        name: "By Bhikari Bala",
+        source: "music20.mp3",
+        cover: "image7.jpg"
+      },
+      {
+        title: "To Bahudare",
+        name: "By Mohammad Aziz",
+        source: "music39.mp3",
+        cover: "image24.jpg"
+      },
+      {
+        title: "Srikhetra Bohu",
+        name: "By Namita Agrawal",
+        source: "music27.mp3",
+        cover: "image25.jpg"
+      },
+      {
+        title: "Mote Singha Duararu",
+        name: "By Mohammad Aziz",
+        source: "music31.mp3",
+        cover: "image26.jpg"
+      },
+      {
+        title: "Nandighosa Tora",
+        name: "By Basant Patra",
+        source: "music21.mp3",
+        cover: "image14.jpeg"
+      },
+      {
+        title: "Maa Deithila",
+        name: "By Tapu Mishra",
+        source: "music33.mp3",
+        cover: "image30.jpeg"
+      },
+      {
+        title: "Ahe Manima",
+        name: "By Mohammad Aziz",
+        source: "music9.mp3",
+        cover: "image13.jpg"
+      },
+      {
+        title: "Ahare Mo Puri Thakura",
+        name: "By Kumar Bapi",
+        source: "music1.mp3",
+        cover: "image20.jpg"
+      },
+      {
+        title: "Bhoka Lagile",
+        name: "By Mohammad Aziz",
+        source: "music36.mp3",
+        cover: "image28.jpg"
+      },
+      {
+        title: "Chalu Chalu Mu",
+        name: "By Kumar Bapi",
+        source: "music8.mp3",
+        cover: "image19.jpeg"
+      },
+      {
+        title: "Mahalaxmi Kahuchhanti",
+        name: "By Mohammad Aziz",
+        source: "music35.mp3",
+        cover: "image29.jpg"
+      },
+      {
+        title: "Jhuli Jhuli Aasuchhe",
+        name: "By Manasi Panigrahi",
+        source: "music29.mp3",
+        cover: "image27.jpeg"
+      },
+      {
+        title: "Hey Jaga",
+        name: "By Sourav Bhardwaj",
+        source: "music13.mp3",
+        cover: "image9.jpg"
+      },
+      {
+        title: "Mu Chithi Lekhichhi",
+        name: "By Kumar Bapi",
+        source: "music12.mp3",
+        cover: "image5.jpg"
+      },
+      {
+        title: "To Badapanaku Dhik",
+        name: "By Sourav Bhardwaj",
+        source: "music4.mp3",
+        cover: "image3.jpg"
+      },
+      {
+        title: "Bhabara Sahare",
+        name: "By Kumar Bapi",
+        source: "music7.mp3",
+        cover: "image15.jpg"
+      },
+      {
+        title: "Nilachala Dhama",
+        name: "By Sricharan Mohanty",
+        source: "music22.mp3",
+        cover: "image10.jpg"
+      },
+      {
+        title: "Tate Nidare Nidare",
+        name: "By Anjali Mishra",
+        source: "music32.mp3",
+        cover: "image31.jpg"
+      },
+      {
+        title: "Jogadi Rakhitha",
+        name: "By Kumar Bapi",
+        source: "music15.mp3",
+        cover: "image8.jpg"
+      },
+      {
+        title: "Mo Jaga Kalia",
+        name: "By Sourav Bhardwaj",
+        source: "music19.mp3",
+        cover: "image2.jpg"
+      },
+      {
+        title: "Niswa Kara He Mote",
+        name: "By Kumar Bapi",
+        source: "music23.mp3",
+        cover: "image18.png.jpg"
+      },
+      {
+        title: "Kaliare Tate Chahindele",
+        name: "By Anjali Mishra",
+        source: "music24.mp3",
+        cover: "image32.jpg"
+      },
+      {
+        title: "Gundicha Rani",
+        name: "By Sourin Bhatt",
+        source: "music11.mp3",
+        cover: "image11.jpg"
+      },
+      {
+        title: "Juga Sambhaba",
+        name: "By Kumar Bapi",
+        source: "music16.mp3",
+        cover: "image21.jpg"
+      },
+      {
+        title: "Tu Debata Mu Manisha",
+        name: "By Sourav Bhardwaj",
+        source: "music6.mp3",
+        cover: "image6.jpg"
+      },
+      {
+        title: "Badadanda Dhuli",
+        name: "By Kumar Bapi",
+        source: "music5.mp3",
+        cover: "image4.jpg"
+      },
+      {
+        title: "Jagatara Jamidara",
+        name: "By Sourav Bhardwaj",
+        source: "music26.mpeg",
+        cover: "image33.jpg"
+      },
+      {
+        title: "Kanhare Kanha",
+        name: "By Namita Agrawal",
+        source: "music25.mp3",
+        cover: "image34.jpg"
+      },
+      {
+        title: "Dinara Suruja",
+        name: "By Mohammad Aziz",
+        source: "music10.mp3",
+        cover: "image22.jpg"
+      },
+      {
+        title: "Mahabahu",
+        name: "By Kumar Bapi",
+        source: "music3.mp3",
+        cover: "image1.jpg"
+      },
+      {
+        title: "Tunde Thau Tuma Nama",
+        name: "By Mohammad Aziz",
+        source: "music14.mp3",
+        cover: "image23.jpg"
+      },
+      {
+        title: "Akasha Tharu Besi",
+        name: "By Kumar Bapi",
+        source: "music2.mp3",
+        cover: "image17.jpeg"
+      },
+      {
+        title: "Mu Papa Tume Punya",
+        name: "By Mohammad Aziz",
+        source: "music34.mp3",
+        cover: "image35.jpg"
+      },
+      {
+        title: "Madhaba He",
+        name: "By Anup Jalhota",
+        source: "music18.mp3",
+        cover: "image12.jpg"
+      },
+      {
+        title: "Abadha Muthie",
+        name: "By Basant Patra",
+        source: "music30.mp3",
+        cover: "image36.jpg"
+      },
+      {
+        title: "Mote Karidere Nandalala",
+        name: "By Mohammad Aziz",
+        source: "music37.mp3",
+        cover: "image37.jpg"
+      },
+      {
+        title: "Jagannathe Ho",
+        name: "By Namita Agrawal",
+        source: "music26.mp3",
+        cover: "image38.jpg"
+      },
+      {
+        title: "Tora Ratha Tanu Tanu",
+        name: "By Mohammad Aziz",
+        source: "music38.mp3",
+        cover: "image39.jpg"
+      },
+      {
+        title: "Eka To Bhakata Jibana",
+        name: "By Bhakta Salabega",
+        source: "music17.mpeg",
+        cover: "image16.jpg"
+      },
+    ];
+
+    const swiperWrapper = document.querySelector(".swiper-wrapper");
+    const songTitle = document.getElementById("song-title");
+    const artistName = document.getElementById("artist-name");
+    const songAudio = document.getElementById("song");
+    const progressBar = document.getElementById("progress");
+    const controlIcon = document.getElementById("controlIcon");
+    const playPauseBtn = document.querySelector(".play-pause-btn");
+    const forwardBtn = document.querySelector(".forward");
+    const backwardBtn = document.querySelector(".backward");
+
+    // Start with the middle song
+    let currentSongIndex = Math.floor(songs.length / 2);
+    let swiper;
+
+    function createSlides() {
+      songs.forEach((song, index) => {
+        const slide = document.createElement("div");
+        slide.classList.add("swiper-slide");
+        slide.innerHTML = `
+          <img src="${song.cover}" alt="${song.title} Cover" />
+        `;
+        slide.addEventListener("click", () => {
+          if (currentSongIndex !== index) {
+            currentSongIndex = index;
+            loadSong(currentSongIndex);
+            playSong();
+            swiper.slideTo(index);
+          }
+        });
+        swiperWrapper.appendChild(slide);
+      });
+    }
+
+    function loadSong(index) {
+      const song = songs[index];
+      songTitle.textContent = song.title;
+      artistName.textContent = song.name;
+      songAudio.src = song.source;
+      progressBar.value = 0;
+      progressBar.max = 0;
+    }
+
+    function playSong() {
+      songAudio.play().catch(err => {
+        console.log("Play prevented:", err);
+      });
+      controlIcon.classList.replace("fa-play", "fa-pause");
+    }
+
+    function pauseSong() {
+      songAudio.pause();
+      controlIcon.classList.replace("fa-pause", "fa-play");
+    }
+
+    function togglePlayPause() {
+      if (songAudio.paused) {
+        playSong();
+      } else {
+        pauseSong();
+      }
+    }
+
+    songAudio.addEventListener("timeupdate", () => {
+      if (!songAudio.paused) {
+        progressBar.value = songAudio.currentTime;
+      }
+    });
+
+    songAudio.addEventListener("loadedmetadata", () => {
+      progressBar.max = songAudio.duration;
+    });
+
+    progressBar.addEventListener("input", () => {
+      songAudio.currentTime = progressBar.value;
+    });
+
+    progressBar.addEventListener("change", () => {
+      playSong();
+    });
+
+    forwardBtn.addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      loadSong(currentSongIndex);
+      playSong();
+      swiper.slideTo(currentSongIndex);
+    });
+
+    backwardBtn.addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      loadSong(currentSongIndex);
+      playSong();
+      swiper.slideTo(currentSongIndex);
+    });
+
+    function initSwiper() {
+      swiper = new Swiper(".swiper", {
+        effect: "coverflow",
+        centeredSlides: true,
+        initialSlide: currentSongIndex, // start with middle song
+        slidesPerView: "auto",
+        allowTouchMove: true,
+        spaceBetween: 40,
+        coverflowEffect: {
+          rotate: 25,
+          stretch: 0,
+          depth: 50,
+          modifier: 1,
+          slideShadows: false,
+        },
+      });
+    }
+
+    window.onload = () => {
+      createSlides();
+      initSwiper();
+      loadSong(currentSongIndex);
+      playSong();  // auto play middle song on load
+    };
+
+    playPauseBtn.addEventListener("click", togglePlayPause);
+
+    audioPlayer.addEventListener("ended", () => {
+  currentSongIndex++;
+  if (currentSongIndex >= songs.length) currentSongIndex = 0;
+  audioPlayer.src = songs[currentSongIndex];
+  audioPlayer.play();
+});
+    
+  </script>
+  
+</body>
+</html>
