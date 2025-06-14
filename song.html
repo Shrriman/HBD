@@ -1,738 +1,998 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Romantic Playlist</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS Animation Library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <style>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Divine Bhajan Playlist Player</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+  
+  <style>
 
-        * {
+    * {
   -webkit-tap-highlight-color: transparent;
 }
-        .glass {
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-        
-        .typing-text {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 3.5s steps(40, end);
-        }
-        
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(0.95); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(0.95); }
-        }
-        
-        .equalizer {
-            display: flex;
-            align-items: flex-end;
-            height: 20px;
-            width: 50px;
-        }
-        
-        .bar {
-            width: 4px;
-            margin: 0 1px;
-            background: linear-gradient(to top, #ff88cc, #ffaad5);
-            animation: equalize 1s infinite;
-        }
-        
-        .bar:nth-child(1) { animation-delay: 0.1s; height: 15px; }
-        .bar:nth-child(2) { animation-delay: 0.2s; height: 10px; }
-        .bar:nth-child(3) { animation-delay: 0.3s; height: 18px; }
-        .bar:nth-child(4) { animation-delay: 0.4s; height: 8px; }
-        .bar:nth-child(5) { animation-delay: 0.5s; height: 12px; }
-        
-        @keyframes equalize {
-            0% { height: 3px; }
-            50% { height: 15px; }
-            100% { height: 3px; }
-        }
-        
-        body {
-            background: linear-gradient(135deg, #fff1f1 0%, #ffd6e7 50%, #f0e6ff 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .particle {
-            position: absolute;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 182, 193, 0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            opacity: 0.6;
-            width: 24px;
-            height: 24px;
-            animation: float 10s linear infinite;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .song-card {
-            transition: all 0.4s ease;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
-        }
-        
-        .song-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.25);
-        }
-        
-        .song-thumbnail {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        
-        .play-btn {
-            transition: all 0.3s ease;
-        }
-        
-        .play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
-        }
-        
-        .song-details {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .shine-effect {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(30deg);
-            animation: shine 6s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: rotate(30deg) translateX(-100%); }
-            20% { transform: rotate(30deg) translateX(100%); }
-            100% { transform: rotate(30deg) translateX(100%); }
-        }
-    </style>
+
+    /* === Reset & Root === */
+    :root {
+      --primary-clr: #e4e4e5;
+      --accent-clr: #eb0b0b;
+      --background-blur: rgba(28, 22, 37, 0.6);
+      --control-bg: rgba(163, 162, 164, 0.3);
+    }
+    * {
+      margin: 0; padding: 0;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman';
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: url(https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/8727c9b1-be21-4932-a221-4257b59a74dd) no-repeat center/cover;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: slidein 120s infinite alternate;
+      padding: 20px;
+      color: var(--primary-clr);
+      overflow: hidden;
+    }
+    @keyframes slidein {
+      0%, 100% {
+        background-position: 20% 0%;
+        background-size: 3400px;
+      }
+      50% {
+        background-position: 100% 0%;
+        background-size: 2400px;
+      }
+    }
+
+    /* === Album Cover Slider === */
+    .album-cover {
+      width: 90vw;
+      max-width: 800px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .swiper {
+      width: 100%;
+      padding: 40px 0 80px;
+    }
+    .swiper-slide {
+      position: relative;
+      max-width: 220px;
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease-out;
+    }
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+      -webkit-box-reflect: below -5px linear-gradient(transparent, transparent, rgba(0,0,0,0.4));
+      transform-origin: center;
+      transform: perspective(800px);
+      transition: transform 0.3s ease-out;
+      user-select: none;
+      pointer-events: none;
+    }
+    .swiper-slide-active:hover img {
+      transform: perspective(800px) scale(1.05);
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: var(--background-blur);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      /* removed YouTube icon so keeping overlay hidden */
+      pointer-events: none;
+    }
+    .swiper-slide:hover .overlay,
+    .swiper-slide-active .overlay {
+      opacity: 0; /* keep overlay hidden as no icon */
+    }
+
+    /* === Music Player === */
+    .music-player {
+      width: 90vw;
+      max-width: 400px;
+      background: var(--background-blur);
+      border-radius: 20px;
+      padding: 25px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      user-select: none;
+    }
+    .music-player h1 {
+      font-weight: 600;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .music-player p {
+      font-weight: 400;
+      opacity: 0.7;
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+    }
+
+    /* Progress Bar */
+    #progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      appearance: none;
+      background: linear-gradient(90deg, #ffdde1, #ee9ca7, #e96443);
+      cursor: pointer;
+      margin-bottom: 32px;
+      -webkit-appearance: none;
+      transition: background 0.3s ease;
+    }
+    #progress:hover {
+      background: linear-gradient(90deg, #ffdde1, #ee9ca7, #e96443);
+    }
+    #progress::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      background: linear-gradient(90deg, #ffdde1, #ee9ca7, #e96443);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-clr);
+      box-shadow: 0 6px 10px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #progress::-webkit-slider-thumb:hover,
+    #progress::-webkit-slider-thumb:focus {
+      background: linear-gradient(90deg, #ffdde1, #ee9ca7, #e96443);
+      box-shadow: 0 0 12px var(--primary-clr);
+    }
+    /* Firefox thumb */
+    #progress::-moz-range-thumb {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-clr);
+      box-shadow: 0 6px 10px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #progress::-moz-range-thumb:hover,
+    #progress::-moz-range-thumb:focus {
+      background: radial-gradient(circle, #fff7e6, #ffd6d6);
+      box-shadow: 0 0 12px var(--primary-clr);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+    .controls button {
+      width: 52px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: none;
+      background: var(--control-bg);
+      color: var(--primary-clr);
+      font-size: 1.3rem;
+      box-shadow: 0 10px 20px rgba(5, 36, 28, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .controls button:hover,
+    .controls button:focus-visible {
+      transform: scale(0.95);
+      outline: none;
+    }
+    .controls button.play-pause-btn {
+      font-size: 1.7rem;
+      background: var(--accent-clr);
+      box-shadow: 0 10px 30px rgba(235, 11, 11, 0.7);
+      color: white;
+      transform-origin: center;
+      transition: transform 0.25s ease;
+    }
+    .controls button.play-pause-btn:hover,
+    .controls button.play-pause-btn:focus-visible {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* === Glowing Divine Progress Bar === */
+#progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  appearance: none;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  box-shadow: 0 0 8px rgba(255, 183, 197, 0.7);
+  cursor: pointer;
+  margin-bottom: 32px;
+  -webkit-appearance: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress:hover {
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+}
+
+/* Webkit Slider Thumb (Chrome, Edge) */
+#progress::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #ffb3ba, 0 0 20px #ffb3ba;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px #ffd9e6, 0 0 30px #ffd9e6;
+}
+
+/* Firefox Thumb */
+#progress::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7e6, #ffd6d6);
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #ffb3ba, 0 0 20px #ffb3ba;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progress::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px #ffd9e6, 0 0 30px #ffd9e6;
+}
+
+.styled-wrapper .button {
+  display: block;
+  position: relative;
+  width: 52px;
+  height: 52px;
+  margin: 0;
+  overflow: hidden;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+}
+
+.styled-wrapper .button:before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 7px;
+  border: 4px solid rgb(116, 0, 0); /* Update dynamically for light/dark mode */
+  transition:
+    opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.styled-wrapper .button:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 7px;
+  border: 5px solid rgb(116, 0, 0);
+  transform: scale(1.3);
+  transition:
+    opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+}
+
+.styled-wrapper .button:hover:before,
+.styled-wrapper .button:focus:before {
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.styled-wrapper .button:hover:after,
+.styled-wrapper .button:focus:after {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.styled-wrapper .button-box {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.styled-wrapper .button-elem {
+  display: block;
+  width: 19px;
+  height: 19px;
+  margin: 16px 18px 0 16px;
+  transform: rotate(360deg);
+  fill: #f0eeef;
+  font-weight: 700;
+}
+
+.styled-wrapper .button:hover .button-box,
+.styled-wrapper .button:focus .button-box {
+  transition: 0.4s;
+  transform: translateX(-53px);
+}
+.back {
+  position: absolute;
+  left: 10px;
+  top: 16px;
+}
+
+     /* Responsive */
+    @media (max-width: 480px) {
+      .music-player {
+        width: 95vw;
+        padding: 20px;
+      }
+      .swiper-slide {
+        max-width: 140px;
+      }
+    }
+    
+  </style>
 </head>
+<body>
 
-<body class="font-sans text-gray-800">
-    <!-- Background Particles -->
-    <div class="particles"></div>
-    
-    <!-- Main Container -->
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header Section -->
-        <div class="text-center mb-10" data-aos="fade-down" data-aos-duration="1000">
-            <h1 class="text-5xl font-bold mb-3 text-pink-600 font-serif">Our Playlist 💖🎶</h1>
-            <p class="text-lg text-purple-700 italic max-w-2xl mx-auto font-light">Every beat, every lyric, every moment – these songs are a part of us.</p>
-        </div>
-        
-        <!-- Search Bar -->
-        <div class="mb-8 max-w-md mx-auto" data-aos="fade-up" data-aos-duration="800">
-            <div class="glass rounded-full px-5 py-3 flex items-center shadow-lg">
-                <i class="fas fa-search text-pink-400 mr-3"></i>
-                <input type="text" id="search" placeholder="Find our song..." class="bg-transparent w-full focus:outline-none placeholder-pink-300 text-pink-600">
-            </div>
-        </div>
-        
-        <!-- Playlist Grid - Now with 3 columns on large screens -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-            <!-- Song Card 1 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="./s1.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Perfect</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">Ed Sheeran</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-calendar-alt mr-1"></i> First Dance</span>
-                        <span><i class="fas fa-clock mr-1"></i> 4:23</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src="./Perfect-(Mr-Jat.in).mp3"></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">Remember our first dance to this song? 💭</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Song Card 2 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="s2.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Die With A Smile</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">Lady Gaga & Bruno Mars</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-car mr-1"></i> Road Trips</span>
-                        <span><i class="fas fa-clock mr-1"></i> 4:29</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src="./Die With A Smile - PagalHits.mp3"></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">Our song for those long drives together 🚗✨</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Song Card 3 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="./s3.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Night Changes</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">One Direction</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-star mr-1"></i> Special Moments</span>
-                        <span><i class="fas fa-clock mr-1"></i> 3:02</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src="./Night Changes_320(PagalWorld).mp3"></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">This song always makes me think of you 🩷</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Song Card 4 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="./s4.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Ve Kamleya</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">Arijit Singh</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-gift mr-1"></i> Anniversary</span>
-                        <span><i class="fas fa-clock mr-1"></i> 4:45</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src="./Ve Kamleya-(Mr-Jat.in).mp3"></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">Our anniversary special 💝</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Song Card 5 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="./s5.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Satranga</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">Arijit Singh</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-moon mr-1"></i> Late Nights</span>
-                        <span><i class="fas fa-clock mr-1"></i> 4:41</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src=""></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">Remember that night under the stars? 🌟</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Song Card 6 -->
-            <div class="song-card glass p-5 relative overflow-hidden" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
-                <div class="shine-effect"></div>
-                <div class="absolute top-3 right-3 text-pink-400">
-                    <i class="fas fa-heart text-xl"></i>
-                </div>
-                
-                <div class="song-thumbnail mb-4 relative">
-                    <img src="./s6.jpg" alt="Song thumbnail" class="w-full h-40 object-cover rounded-2xl">
-                    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all">
-                            <i class="fas fa-play text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="song-details">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-bold text-pink-600">Sakoon Mila</h3>
-                        <div class="equalizer hidden">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <p class="text-purple-500 mb-3 text-sm">Arijit Singh</p>
-                    
-                    <div class="flex items-center text-xs text-pink-400 mb-3">
-                        <span class="mr-3"><i class="fas fa-smile mr-1"></i> Happy Days</span>
-                        <span><i class="fas fa-clock mr-1"></i> 3:40</span>
-                    </div>
-                </div>
-                
-                <audio class="hidden" src=""></audio>
-                
-                <div class="hidden memory opacity-0 transition-all duration-500 mt-3 text-center italic text-pink-600 text-sm">
-                    <p class="typing-text">This always makes me smile 😊</p>
-                </div>
-                
-                <div class="mt-3 pt-3 border-t border-pink-100 flex justify-between items-center">
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-upload mr-1"></i> Upload
-                    </button>
-                    <button class="text-pink-500 hover:text-pink-700">
-                        <i class="fas fa-heart mr-1"></i> Favorite
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Add New Song Button -->
-        <div class="flex justify-center mb-16" data-aos="fade-up" data-aos-duration="800">
-            <button class="bg-pink-500 hover:bg-pink-600 text-white rounded-full px-6 py-3 flex items-center justify-center shadow-lg transition-all hover:transform hover:scale-105">
-                <i class="fas fa-plus mr-2"></i> Add Our New Song
-            </button>
-        </div>
-        
-        <!-- Now Playing Bar -->
-        <div id="now-playing" class="fixed bottom-0 left-0 w-full bg-white bg-opacity-70 backdrop-blur-md py-3 px-4 shadow-lg transform translate-y-full transition-transform duration-500 flex items-center justify-between">
-            <div class="flex items-center">
-                <div class="mr-3">
-                    <div class="w-12 h-12 rounded-full bg-pink-500 flex items-center justify-center text-white pulse">
-                        <i class="fas fa-music"></i>
-                    </div>
-                </div>
-                <div>
-                    <p class="font-bold text-pink-600">Now Playing:</p>
-                    <p id="current-song" class="text-purple-600">-</p>
-                </div>
-            </div>
-            <div class="flex items-center">
-                <button class="mx-2 text-pink-600 hover:text-pink-800 transition-colors">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="mx-2 text-pink-600 hover:text-pink-800 transition-colors">
-                    <i class="fas fa-pause"></i>
-                </button>
-                <button class="mx-2 text-pink-600 hover:text-pink-800 transition-colors">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-            </div>
-            <div class="equalizer">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-        </div>
+<div class = "back">
+<div class="styled-wrapper">
+   <a onclick = "history.back()"><button class="button">
+    <div class="button-box">
+      <span class="button-elem">
+        <svg
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          class="arrow-icon"
+        >
+          <path
+            fill="gold"
+            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+          ></path>
+        </svg>
+      </span>
+      <span class="button-elem">
+        <svg
+          fill="gold"
+          viewBox="0 0  24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          class="arrow-icon"
+        >
+          <path
+            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+          ></path>
+        </svg>
+      </span>
     </div>
+  </button></a>
+</div></div>
+  
+  <div class="album-cover">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <!-- Slides will be inserted dynamically by JS -->
+      </div>
+    </div>
+  </div>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap" rel="stylesheet" />
+  <style>
+
+    /* Sticky Heading */
+    #stickyHeader {
+      position: fixed;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      padding: 10px 20px 10px 70px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: #ffd700;
+      flex-direction: column;
+      white-space: nowrap;
+      z-index: 1000;
+    }
+
+    #stickyHeader div {
+      font-size: 1.8em;
+      text-decoration: underline;
+      text-decoration-color: #8f0000;
+      text-underline-offset: 6px;
+      text-shadow: 1px 1px 3px #ffa500cc;
+    }
+
+    #stickyHeader img {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #8f0000;
+      box-shadow: 0 0 8px rgba(178, 34, 34, 0.7);
+      object-fit: cover;
+    }
+
+     /* Responsive */
+    @media (max-width: 480px) {
+      #stickyHeader {
+        padding-left: 61px;
+      }
+
+      #stickyHeader div {
+        font-size: 1.4em;
+      } 
+    }
+      
+  </style>
+
+  <!-- Sticky Header Only -->
+  <div id="stickyHeader">
+    <img src="https://i.imgur.com/F77TH0h.png" alt="Hanuman Ji" />
+    <div>Bajarang</div>
+    <div>Bhajan Mala</div>
+  </div>
+
+  <style>
+        .li {
+      padding: 5px 0;
+      list-style: none;
+      position: absolute;
+      right: 7px;
+      top: 16px;
+    }
+
+    .li a i {
+      top: 16px;
+      color: #ffd700;
+      font-size: 23px;
+      border-radius: 50%;
+      border: 4px solid #8f0000;
+      padding: 5px;
+      transition: 0.3s ease;
+      background-color: transparent;
+    }
+
+    .li a:hover i {
+      color: #ffffff;
+      text-shadow: 0 0 10px #ffffff;
+    }
+
+    .lang-btn {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Bottom Pop-Up */
+    .lang-popup {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translate(-50%, 200vh);
+      width: 100%;
+      max-width: 261px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border-radius: 20px 20px 0 0;
+      padding: 25px;
+      transition: transform 0.4s ease;
+      z-index: 9999;
+    }
+
+    .lang-popup.show {
+      transform: translate(-50%, -23%);
+    }
+
+    .popup-content {
+      text-align: center;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .popup-content h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+
+    .popup-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .popup-options button {
+      background-color: #e9af00;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .popup-options button:hover {
+      background-color: #916c00;
+    }
+  </style>
+
+  <!-- Language Button -->
+  <div class="li">
+    <button id="lang-btn" class="lang-btn">
+      <a><i class="fa fa-globe"></i></a>
+    </button>
+  </div>
+
+  <!-- Popup Box -->
+  <div class="lang-popup" id="lang-popup">
+    <div class="popup-content">
+      <h3>🌺 Change Language</h3>
+      <div class="popup-options">
+        <button onclick="location.href='web8.html'">ଓଡ଼ିଆ</button>
+        <button onclick="location.href='web10.html'">हिंदी</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const langBtn = document.getElementById("lang-btn");
+    const popup = document.getElementById("lang-popup");
+
+      langBtn.addEventListener("click", () => {
+      popup.classList.toggle("show");
+
+      if (popup.classList.contains("show")) {
+        document.body.style.overflowX = "auto";   // Horizontal scroll allowed
+        document.body.style.overflowY = "hidden"; // Vertical scroll blocked
+       } else {
+        document.body.style.overflowX = "auto";   // Normal horizontal scroll
+        document.body.style.overflowY = "hidden";   // Vertical scroll allowed (ya apne hisaab se)
+       }
+    });
     
-    <script>
-        // Initialize AOS animations
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init();
-            createParticles();
-            initializeSongCards();
-            initializeSearch();
+    window.addEventListener("click", function (e) {
+      if (!popup.contains(e.target) && !langBtn.contains(e.target)) {
+        popup.classList.remove("show");
+        document.body.style.overflowX = "auto";
+        document.body.style.overflowY = "hidden";
+      }
+    });
+    
+  </script>
+
+
+  <div class="music-player">
+    <h1 id="song-title">Loading...</h1>
+    <p id="artist-name">Please Wait</p>
+
+    <audio id="song" preload="metadata"></audio>
+    <input type="range" id="progress" value="0" min="0" step="0.01" />
+
+    <div class="controls">
+      <button class="backward" aria-label="Previous Song"><i class="fa-solid fa-backward"></i></button>
+      <button class="play-pause-btn" aria-label="Play/Pause"><i id="controlIcon" class="fa-solid fa-play"></i></button>
+      <button class="forward" aria-label="Next Song"><i class="fa-solid fa-forward"></i></button>
+    </div>
+  </div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    
+    const songs = [
+      {
+        title: "Mu To Bada Deulara Para",
+        name: "By Bhikari Bala",
+        source: "music20.mp3",
+        cover: "image7.jpg"
+      },
+      {
+        title: "To Bahudare",
+        name: "By Mohammad Aziz",
+        source: "music39.mp3",
+        cover: "image24.jpg"
+      },
+      {
+        title: "Srikhetra Bohu",
+        name: "By Namita Agrawal",
+        source: "music27.mp3",
+        cover: "image25.jpg"
+      },
+      {
+        title: "Mote Singha Duararu",
+        name: "By Mohammad Aziz",
+        source: "music31.mp3",
+        cover: "image26.jpg"
+      },
+      {
+        title: "Nandighosa Tora",
+        name: "By Basant Patra",
+        source: "music21.mp3",
+        cover: "image14.jpeg"
+      },
+      {
+        title: "Maa Deithila",
+        name: "By Tapu Mishra",
+        source: "music33.mp3",
+        cover: "image30.jpeg"
+      },
+      {
+        title: "Ahe Manima",
+        name: "By Mohammad Aziz",
+        source: "music9.mp3",
+        cover: "image13.jpg"
+      },
+      {
+        title: "Ahare Mo Puri Thakura",
+        name: "By Kumar Bapi",
+        source: "music1.mp3",
+        cover: "image20.jpg"
+      },
+      {
+        title: "Bhoka Lagile",
+        name: "By Mohammad Aziz",
+        source: "music36.mp3",
+        cover: "image28.jpg"
+      },
+      {
+        title: "Chalu Chalu Mu",
+        name: "By Kumar Bapi",
+        source: "music8.mp3",
+        cover: "image19.jpeg"
+      },
+      {
+        title: "Mahalaxmi Kahuchhanti",
+        name: "By Mohammad Aziz",
+        source: "music35.mp3",
+        cover: "image29.jpg"
+      },
+      {
+        title: "Jhuli Jhuli Aasuchhe",
+        name: "By Manasi Panigrahi",
+        source: "music29.mp3",
+        cover: "image27.jpeg"
+      },
+      {
+        title: "Hey Jaga",
+        name: "By Sourav Bhardwaj",
+        source: "music13.mp3",
+        cover: "image9.jpg"
+      },
+      {
+        title: "Mu Chithi Lekhichhi",
+        name: "By Kumar Bapi",
+        source: "music12.mp3",
+        cover: "image5.jpg"
+      },
+      {
+        title: "To Badapanaku Dhik",
+        name: "By Sourav Bhardwaj",
+        source: "music4.mp3",
+        cover: "image3.jpg"
+      },
+      {
+        title: "Bhabara Sahare",
+        name: "By Kumar Bapi",
+        source: "music7.mp3",
+        cover: "image15.jpg"
+      },
+      {
+        title: "Nilachala Dhama",
+        name: "By Sricharan Mohanty",
+        source: "music22.mp3",
+        cover: "image10.jpg"
+      },
+      {
+        title: "Tate Nidare Nidare",
+        name: "By Anjali Mishra",
+        source: "music32.mp3",
+        cover: "image31.jpg"
+      },
+      {
+        title: "Jogadi Rakhitha",
+        name: "By Kumar Bapi",
+        source: "music15.mp3",
+        cover: "image8.jpg"
+      },
+      {
+        title: "Mo Jaga Kalia",
+        name: "By Sourav Bhardwaj",
+        source: "music19.mp3",
+        cover: "image2.jpg"
+      },
+      {
+        title: "Niswa Kara He Mote",
+        name: "By Kumar Bapi",
+        source: "music23.mp3",
+        cover: "image18.png.jpg"
+      },
+      {
+        title: "Kaliare Tate Chahindele",
+        name: "By Anjali Mishra",
+        source: "music24.mp3",
+        cover: "image32.jpg"
+      },
+      {
+        title: "Gundicha Rani",
+        name: "By Sourin Bhatt",
+        source: "music11.mp3",
+        cover: "image11.jpg"
+      },
+      {
+        title: "Juga Sambhaba",
+        name: "By Kumar Bapi",
+        source: "music16.mp3",
+        cover: "image21.jpg"
+      },
+      {
+        title: "Tu Debata Mu Manisha",
+        name: "By Sourav Bhardwaj",
+        source: "music6.mp3",
+        cover: "image6.jpg"
+      },
+      {
+        title: "Badadanda Dhuli",
+        name: "By Kumar Bapi",
+        source: "music5.mp3",
+        cover: "image4.jpg"
+      },
+      {
+        title: "Jagatara Jamidara",
+        name: "By Sourav Bhardwaj",
+        source: "music26.mpeg",
+        cover: "image33.jpg"
+      },
+      {
+        title: "Kanhare Kanha",
+        name: "By Namita Agrawal",
+        source: "music25.mp3",
+        cover: "image34.jpg"
+      },
+      {
+        title: "Dinara Suruja",
+        name: "By Mohammad Aziz",
+        source: "music10.mp3",
+        cover: "image22.jpg"
+      },
+      {
+        title: "Mahabahu",
+        name: "By Kumar Bapi",
+        source: "music3.mp3",
+        cover: "image1.jpg"
+      },
+      {
+        title: "Tunde Thau Tuma Nama",
+        name: "By Mohammad Aziz",
+        source: "music14.mp3",
+        cover: "image23.jpg"
+      },
+      {
+        title: "Akasha Tharu Besi",
+        name: "By Kumar Bapi",
+        source: "music2.mp3",
+        cover: "image17.jpeg"
+      },
+      {
+        title: "Mu Papa Tume Punya",
+        name: "By Mohammad Aziz",
+        source: "music34.mp3",
+        cover: "image35.jpg"
+      },
+      {
+        title: "Madhaba He",
+        name: "By Anup Jalhota",
+        source: "music18.mp3",
+        cover: "image12.jpg"
+      },
+      {
+        title: "Abadha Muthie",
+        name: "By Basant Patra",
+        source: "music30.mp3",
+        cover: "image36.jpg"
+      },
+      {
+        title: "Mote Karidere Nandalala",
+        name: "By Mohammad Aziz",
+        source: "music37.mp3",
+        cover: "image37.jpg"
+      },
+      {
+        title: "Jagannathe Ho",
+        name: "By Namita Agrawal",
+        source: "music26.mp3",
+        cover: "image38.jpg"
+      },
+      {
+        title: "Tora Ratha Tanu Tanu",
+        name: "By Mohammad Aziz",
+        source: "music38.mp3",
+        cover: "image39.jpg"
+      },
+      {
+        title: "Eka To Bhakata Jibana",
+        name: "By Bhakta Salabega",
+        source: "music17.mpeg",
+        cover: "image16.jpg"
+      },
+    ];
+
+    const swiperWrapper = document.querySelector(".swiper-wrapper");
+    const songTitle = document.getElementById("song-title");
+    const artistName = document.getElementById("artist-name");
+    const songAudio = document.getElementById("song");
+    const progressBar = document.getElementById("progress");
+    const controlIcon = document.getElementById("controlIcon");
+    const playPauseBtn = document.querySelector(".play-pause-btn");
+    const forwardBtn = document.querySelector(".forward");
+    const backwardBtn = document.querySelector(".backward");
+
+    // Start with the middle song
+    let currentSongIndex = Math.floor(songs.length / 2);
+    let swiper;
+
+    function createSlides() {
+      songs.forEach((song, index) => {
+        const slide = document.createElement("div");
+        slide.classList.add("swiper-slide");
+        slide.innerHTML = `
+          <img src="${song.cover}" alt="${song.title} Cover" />
+        `;
+        slide.addEventListener("click", () => {
+          if (currentSongIndex !== index) {
+            currentSongIndex = index;
+            loadSong(currentSongIndex);
+            playSong();
+            swiper.slideTo(index);
+          }
         });
-        
-        // Create floating heart particles
-        function createParticles() {
-            const container = document.querySelector('.particles');
-            const particleCount = 20;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                // Random positioning
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                
-                // Random size
-                const size = Math.random() * 15 + 10;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                // Random animation duration
-                const duration = Math.random() * 30 + 20;
-                particle.style.animationDuration = duration + 's';
-                
-                // Random delay
-                const delay = Math.random() * 20;
-                particle.style.animationDelay = delay + 's';
-                
-                container.appendChild(particle);
-            }
-        }
-        
-        // Initialize song cards
-        function initializeSongCards() {
-            const songCards = document.querySelectorAll('.song-card');
-            const nowPlayingBar = document.getElementById('now-playing');
-            const currentSongElement = document.getElementById('current-song');
-            let currentlyPlaying = null;
-            
-            songCards.forEach(card => {
-                // Show memory message on hover
-                card.addEventListener('mouseenter', function() {
-                    const memory = this.querySelector('.memory');
-                    memory.classList.remove('hidden');
-                    setTimeout(() => {
-                        memory.classList.remove('opacity-0');
-                    }, 100);
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    const memory = this.querySelector('.memory');
-                    memory.classList.add('opacity-0');
-                    setTimeout(() => {
-                        memory.classList.add('hidden');
-                    }, 500);
-                });
-                
-                // Play button functionality
-                const playBtn = card.querySelector('.play-btn');
-                const equalizer = card.querySelector('.equalizer');
-                const songTitle = card.querySelector('h3').textContent;
-                const artist = card.querySelector('p').textContent;
-               // ...inside initializeSongCards()...
-playBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-
-    // Stop previously playing song if any
-    if (currentlyPlaying && currentlyPlaying !== card) {
-        const prevPlayBtn = currentlyPlaying.querySelector('.play-btn');
-        const prevEqualizer = currentlyPlaying.querySelector('.equalizer');
-        const prevAudio = currentlyPlaying.querySelector('audio');
-        prevPlayBtn.innerHTML = '<i class="fas fa-play text-lg"></i>';
-        prevEqualizer.classList.add('hidden');
-        if (prevAudio) prevAudio.pause();
-        prevAudio.currentTime = 0;
+        swiperWrapper.appendChild(slide);
+      });
     }
 
-    const audio = card.querySelector('audio');
-
-    // Toggle play/pause for this song
-    if (currentlyPlaying === card) {
-        // Pause
-        playBtn.innerHTML = '<i class="fas fa-play text-lg"></i>';
-        equalizer.classList.add('hidden');
-        nowPlayingBar.classList.remove('translate-y-0');
-        nowPlayingBar.classList.add('translate-y-full');
-        if (audio) audio.pause();
-        currentlyPlaying = null;
-    } else {
-        // Play
-        playBtn.innerHTML = '<i class="fas fa-pause text-lg"></i>';
-        equalizer.classList.remove('hidden');
-        currentSongElement.textContent = `${songTitle} - ${artist}`;
-        nowPlayingBar.classList.remove('translate-y-full');
-        nowPlayingBar.classList.add('translate-y-0');
-        if (audio) audio.play();
-        currentlyPlaying = card;
+    function loadSong(index) {
+      const song = songs[index];
+      songTitle.textContent = song.title;
+      artistName.textContent = song.name;
+      songAudio.src = song.source;
+      progressBar.value = 0;
+      progressBar.max = 0;
     }
+
+    function playSong() {
+      songAudio.play().catch(err => {
+        console.log("Play prevented:", err);
+      });
+      controlIcon.classList.replace("fa-play", "fa-pause");
+    }
+
+    function pauseSong() {
+      songAudio.pause();
+      controlIcon.classList.replace("fa-pause", "fa-play");
+    }
+
+    function togglePlayPause() {
+      if (songAudio.paused) {
+        playSong();
+      } else {
+        pauseSong();
+      }
+    }
+
+    songAudio.addEventListener("timeupdate", () => {
+      if (!songAudio.paused) {
+        progressBar.value = songAudio.currentTime;
+      }
+    });
+
+    songAudio.addEventListener("loadedmetadata", () => {
+      progressBar.max = songAudio.duration;
+    });
+
+    progressBar.addEventListener("input", () => {
+      songAudio.currentTime = progressBar.value;
+    });
+
+    progressBar.addEventListener("change", () => {
+      playSong();
+    });
+
+    forwardBtn.addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      loadSong(currentSongIndex);
+      playSong();
+      swiper.slideTo(currentSongIndex);
+    });
+
+    backwardBtn.addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      loadSong(currentSongIndex);
+      playSong();
+      swiper.slideTo(currentSongIndex);
+    });
+
+    function initSwiper() {
+      swiper = new Swiper(".swiper", {
+        effect: "coverflow",
+        centeredSlides: true,
+        initialSlide: currentSongIndex, // start with middle song
+        slidesPerView: "auto",
+        allowTouchMove: true,
+        spaceBetween: 40,
+        coverflowEffect: {
+          rotate: 25,
+          stretch: 0,
+          depth: 50,
+          modifier: 1,
+          slideShadows: false,
+        },
+      });
+    }
+
+    window.onload = () => {
+      createSlides();
+      initSwiper();
+      loadSong(currentSongIndex);
+      playSong();  // auto play middle song on load
+    };
+
+    playPauseBtn.addEventListener("click", togglePlayPause);
+
+    audioPlayer.addEventListener("ended", () => {
+  currentSongIndex++;
+  if (currentSongIndex >= songs.length) currentSongIndex = 0;
+  audioPlayer.src = songs[currentSongIndex];
+  audioPlayer.play();
 });
-            });
-        }
-        
-        // Initialize search functionality
-        function initializeSearch() {
-            const searchInput = document.getElementById('search');
-            const songCards = document.querySelectorAll('.song-card');
-            
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
-                
-                songCards.forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const artist = card.querySelector('p').textContent.toLowerCase();
-                    const tags = card.querySelector('.text-pink-400').textContent.toLowerCase();
-                    
-                    // Check if card matches search term
-                    if (title.includes(searchTerm) || artist.includes(searchTerm) || tags.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        }
-        
-        // Add event listener for "Add Our New Song" button
-        document.addEventListener('DOMContentLoaded', function() {
-            const addButton = document.querySelector('button:contains("Add Our New Song")');
-            if (addButton) {
-                addButton.addEventListener('click', function() {
-                    // You could implement modal display here
-                    alert('Soon you can add your special songs here! 💕');
-                });
-            }
-        });
-        
-        // Fix for button selector in the previous function
-        document.addEventListener('DOMContentLoaded', function() {
-            const addButton = document.querySelector('.bg-pink-500.hover\\:bg-pink-600');
-            if (addButton) {
-                addButton.addEventListener('click', function() {
-                    alert('Soon you can add your special songs here! 💕');
-                });
-            }
-        });
-        
-        // Handle now playing bar controls
-        document.addEventListener('DOMContentLoaded', function() {
-            const playPauseBtn = document.querySelector('#now-playing .fa-pause').parentElement;
-            const prevBtn = document.querySelector('#now-playing .fa-step-backward').parentElement;
-            const nextBtn = document.querySelector('#now-playing .fa-step-forward').parentElement;
-            
-            playPauseBtn.addEventListener('click', function() {
-                const icon = this.querySelector('i');
-                if (icon.classList.contains('fa-pause')) {
-                    icon.classList.remove('fa-pause');
-                    icon.classList.add('fa-play');
-                    
-                    // Pause currently playing song
-                    if (currentlyPlaying) {
-                        const playBtn = currentlyPlaying.querySelector('.play-btn');
-                        playBtn.innerHTML = '<i class="fas fa-play text-lg"></i>';
-                    }
-                } else {
-                    icon.classList.remove('fa-play');
-                    icon.classList.add('fa-pause');
-                    
-                    // Resume playing
-                    if (currentlyPlaying) {
-                        const playBtn = currentlyPlaying.querySelector('.play-btn');
-                        playBtn.innerHTML = '<i class="fas fa-pause text-lg"></i>';
-                    }
-                }
-            });
-            
-            prevBtn.addEventListener('click', function() {
-                // Go to previous song functionality
-                alert('Previous song functionality coming soon!');
-            });
-            
-            nextBtn.addEventListener('click', function() {
-                // Go to next song functionality
-                alert('Next song functionality coming soon!');
-            });
-        });
-    </script>
+    
+  </script>
 </body>
 </html>
