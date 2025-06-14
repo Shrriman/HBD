@@ -271,64 +271,35 @@
   box-shadow: 0 0 15px #ffd9e6, 0 0 30px #ffd9e6;
 }
 
-    .play {
-    justify-content; center;
-      text-align: center;
-      align-items: center;
-      color: Pink;
-    }
-
-    body {
-  background: linear-gradient(to bottom right, #ffe6f0, #ffcce6); /* soft pink background */
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.playlist-container {
-  text-align: center;
-  margin-top: 60px;
-  padding: 25px;
-  background: rgba(255, 204, 229, 0.15); /* pink blur glass effect */
-  border-radius: 20px;
-  box-shadow: 0 0 25px rgba(255, 153, 204, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  animation: fadeIn 2s ease-in-out;
-  border: 2px solid rgba(255, 182, 193, 0.3);
-}
-
-.playlist-heading {
+    .playlist-heading {
   font-size: 3em;
   font-weight: bold;
-  color: #ff4da6; /* bright pink */
-  text-shadow: 0 0 10px #ffb6c1, 0 0 25px #ff69b4;
-  margin-bottom: 10px;
+  color: #ff4da6;
+  text-align: center;
+  text-shadow: 0 0 10px #ffb6c1, 0 0 20px #ff69b4;
   animation: glow 2s ease-in-out infinite alternate;
+  margin-top: 60px;
 }
 
 .playlist-subtext {
   font-size: 1.3em;
-  color: #c2185b; /* deep rose pink */
-  padding: 0 20px;
-  line-height: 1.6;
+  color: #c2185b;
+  text-align: center;
+  margin: 10px 20px;
+  line-height: 1.5;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @keyframes glow {
   from {
-    text-shadow: 0 0 10px #ffb6c1, 0 0 20px #ff69b4;
+    text-shadow: 0 0 8px #ffb6c1, 0 0 16px #ff69b4;
   }
   to {
-    text-shadow: 0 0 20px #ff4da6, 0 0 35px #ff1493;
+    text-shadow: 0 0 16px #ff4da6, 0 0 24px #ff1493;
   }
 }
-
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
 
      /* Responsive */
     @media (max-width: 480px) {
@@ -345,12 +316,10 @@
 </head>
 <body style="background: linear-gradient(135deg, #fff1f1 0%, #ffd6e7 50%, #f0e6ff 100%); background-attachment: fixed;">
 
-<div class="playlist-container">
   <h2 class="playlist-heading">Our Playlist 💖🎶</h2>
   <p class="playlist-subtext">
     Every beat, every melody reminds me of you – your smile, your mischief, and every moment we shared growing up.
   </p>
-</div>
   
   <div class="album-cover">
     <div class="swiper">
