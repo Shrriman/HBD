@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🎁 Secret for You 💖</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(-45deg, #ffe6f0, #ffd6e8, #f3e5f5, #e1bee7);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .password-box {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 40px 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(255, 105, 180, 0.3);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .password-box h2 {
+      font-size: 1.9rem;
+      color: #ff3399;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #ffc0cb, 0 0 20px #ff66b2;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .password-box input {
+      padding: 14px 16px;
+      width: 100%;
+      font-size: 16px; /* Fix zoom issue */
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      margin-bottom: 20px;
+      background-color: #fff0f5;
+      box-shadow: 0 0 10px #ffc0cb;
+      max-width: 100%;
+    }
+
+    .password-box button {
+      padding: 14px 25px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background: #ff66b2;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+
+    .password-box button:hover {
+      background: #ff1493;
+      animation: heartbeat 0.8s infinite;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 8px #ffc0cb, 0 0 16px #ff66b2;
+      }
+      to {
+        text-shadow: 0 0 16px #ff3399, 0 0 24px #ff1493;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    /* Small devices */
+    @media (max-width: 400px) {
+      .password-box h2 {
+        font-size: 1.6rem;
+      }
+
+      .password-box {
+        padding: 30px 20px;
+      }
+
+      .password-box button {
+        font-size: 15px;
+      }
+
+      .password-box input {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="password-box">
+    <h2>🎀 Secret Code for You 💖</h2>
+    <input type="password" id="passwordInput" placeholder="Type your secret password..." />
+    <br>
+    <button onclick="checkPassword()">Unlock 🎁</button>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const pass = document.getElementById("passwordInput").value;
+      if (pass === "2005") {
+        window.location.href = "HBD1.html";
+      } else if (pass === "2007") {
+        window.location.href = "HBD2.html";
+      } else {
+        alert("Oops! Wrong password 💔");
+      }
+    }
+
+    // Enable enter key
+    document.getElementById("passwordInput").addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        checkPassword();
+      }
+    });
+  </script>
+</body>
+</html>
