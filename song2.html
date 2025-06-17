@@ -354,6 +354,7 @@
     <p id="artist-name">Please Wait</p>
 
     <audio id="song" preload="metadata"></audio>
+    <p id="current-time" style="margin-top: 10px; font-weight: bold; color: #555;">0:00 / 0:00</p>
     <input type="range" id="progress" value="0" min="0" step="0.01" />
 
     <div class="controls">
@@ -666,13 +667,38 @@
 
     playPauseBtn.addEventListener("click", togglePlayPause);
 
-    audioPlayer.addEventListener("ended", () => {
+  audioPlayer.addEventListener("ended", () => {
   currentSongIndex++;
   if (currentSongIndex >= songs.length) currentSongIndex = 0;
   audioPlayer.src = songs[currentSongIndex];
   audioPlayer.play();
 });
-    
+
+const song = document.getElementById("song");
+const timeDisplay = document.getElementById("current-time");
+
+  song.addEventListener("timeupdate", () => {
+  const current = formatTime(song.currentTime);
+  const total = formatTime(song.duration || 0);
+  timeDisplay.textContent = `${current} / ${total}`;
+});
+
+  function formatTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+  song.addEventListener("ended", () => {
+  currentSongIndex = (currentSongIndex + 1) % playlist.length;
+  loadAndPlaySong(currentSongIndex);
+});
+
+  audioPlayer.addEventListener("ended", () => {
+  currentSong = (currentSong + 1) % playlist.length;
+  playSong(currentSong);
+});
+
   </script>
   
 </body>
