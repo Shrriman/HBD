@@ -370,10 +370,10 @@
     
     const songs = [
       {
-        title: "Something Something",
-        name: "By Udit Narayan and Ira Mohanty",
-        source: "song 4.mp3",
-        cover: "image 4.jpg"
+        title: "Aji Akashe Ki Ranga Lagila",
+        name: "By Udit Narayan and Nibedita",
+        source: "song4.mp3",
+        cover: "image4.jpg"
       },
       {
         title: "Janu Tame Chamkucha",
@@ -630,11 +630,21 @@
 
     playPauseBtn.addEventListener("click", togglePlayPause);
 
-    audioPlayer.addEventListener("ended", () => {
+  audioPlayer.addEventListener("ended", () => {
   currentSongIndex++;
   if (currentSongIndex >= songs.length) currentSongIndex = 0;
   audioPlayer.src = songs[currentSongIndex];
   audioPlayer.play();
+});
+
+  song.addEventListener("ended", () => {
+  currentSongIndex = (currentSongIndex + 1) % playlist.length;
+  loadAndPlaySong(currentSongIndex);
+});
+
+audioPlayer.addEventListener("ended", () => {
+  currentSong = (currentSong + 1) % playlist.length;
+  playSong(currentSong);
 });
     
   </script>
