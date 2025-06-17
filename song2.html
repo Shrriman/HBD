@@ -546,142 +546,129 @@
     ];
 
     const swiperWrapper = document.querySelector(".swiper-wrapper");
-    const songTitle = document.getElementById("song-title");
-    const artistName = document.getElementById("artist-name");
-    const songAudio = document.getElementById("song");
-    const progressBar = document.getElementById("progress");
-    const controlIcon = document.getElementById("controlIcon");
-    const playPauseBtn = document.querySelector(".play-pause-btn");
-    const forwardBtn = document.querySelector(".forward");
-    const backwardBtn = document.querySelector(".backward");
+  const songTitle = document.getElementById("song-title");
+  const artistName = document.getElementById("artist-name");
+  const songAudio = document.getElementById("song");
+  const progressBar = document.getElementById("progress");
+  const controlIcon = document.getElementById("controlIcon");
+  const playPauseBtn = document.querySelector(".play-pause-btn");
+  const forwardBtn = document.querySelector(".forward");
+  const backwardBtn = document.querySelector(".backward");
 
-    // Start with the middle song
-    let currentSongIndex = Math.floor(songs.length / 2);
-    let swiper;
+  let currentSongIndex = Math.floor(songs.length / 2);
+  let swiper;
 
-    function createSlides() {
-      songs.forEach((song, index) => {
-        const slide = document.createElement("div");
-        slide.classList.add("swiper-slide");
-        slide.innerHTML = `
-          <img src="${song.cover}" alt="${song.title} Cover" />
-        `;
-        slide.addEventListener("click", () => {
-          if (currentSongIndex !== index) {
-            currentSongIndex = index;
-            loadSong(currentSongIndex);
-            playSong();
-            swiper.slideTo(index);
-          }
-        });
-        swiperWrapper.appendChild(slide);
+  function createSlides() {
+    songs.forEach((song, index) => {
+      const slide = document.createElement("div");
+      slide.classList.add("swiper-slide");
+      slide.innerHTML = `<img src="${song.cover}" alt="${song.title} Cover" />`;
+      slide.addEventListener("click", () => {
+        if (currentSongIndex !== index) {
+          currentSongIndex = index;
+          loadSong(currentSongIndex);
+          playSong();
+          swiper.slideTo(index);
+        }
       });
-    }
-
-    function loadSong(index) {
-      const song = songs[index];
-      songTitle.textContent = song.title;
-      artistName.textContent = song.name;
-      songAudio.src = song.source;
-      progressBar.value = 0;
-      progressBar.max = 0;
-    }
-
-    function playSong() {
-      songAudio.play().catch(err => {
-        console.log("Play prevented:", err);
-      });
-      controlIcon.classList.replace("fa-play", "fa-pause");
-    }
-
-    function pauseSong() {
-      songAudio.pause();
-      controlIcon.classList.replace("fa-pause", "fa-play");
-    }
-
-    function togglePlayPause() {
-      if (songAudio.paused) {
-        playSong();
-      } else {
-        pauseSong();
-      }
-    }
-
-    songAudio.addEventListener("timeupdate", () => {
-      if (!songAudio.paused) {
-        progressBar.value = songAudio.currentTime;
-      }
+      swiperWrapper.appendChild(slide);
     });
+  }
 
-    songAudio.addEventListener("loadedmetadata", () => {
-      progressBar.max = songAudio.duration;
-    });
+  function loadSong(index) {
+    const song = songs[index];
+    songTitle.textContent = song.title;
+    artistName.textContent = song.name;
+    songAudio.src = song.source;
+    progressBar.value = 0;
+    progressBar.max = 0;
+  }
 
-    progressBar.addEventListener("input", () => {
-      songAudio.currentTime = progressBar.value;
-    });
+  function playSong() {
+    songAudio.play().catch(err => console.log("Play prevented:", err));
+    controlIcon.classList.replace("fa-play", "fa-pause");
+  }
 
-    progressBar.addEventListener("change", () => {
+  function pauseSong() {
+    songAudio.pause();
+    controlIcon.classList.replace("fa-pause", "fa-play");
+  }
+
+  function togglePlayPause() {
+    if (songAudio.paused) {
       playSong();
-    });
-
-    forwardBtn.addEventListener("click", () => {
-      currentSongIndex = (currentSongIndex + 1) % songs.length;
-      loadSong(currentSongIndex);
-      playSong();
-      swiper.slideTo(currentSongIndex);
-    });
-
-    backwardBtn.addEventListener("click", () => {
-      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-      loadSong(currentSongIndex);
-      playSong();
-      swiper.slideTo(currentSongIndex);
-    });
-
-    function initSwiper() {
-      swiper = new Swiper(".swiper", {
-        effect: "coverflow",
-        centeredSlides: true,
-        initialSlide: currentSongIndex, // start with middle song
-        slidesPerView: "auto",
-        allowTouchMove: true,
-        spaceBetween: 40,
-        coverflowEffect: {
-          rotate: 25,
-          stretch: 0,
-          depth: 50,
-          modifier: 1,
-          slideShadows: false,
-        },
-      });
+    } else {
+      pauseSong();
     }
+  }
 
-    window.onload = () => {
-      createSlides();
-      initSwiper();
-      loadSong(currentSongIndex);
-      playSong();  // auto play middle song on load
-    };
+  // ✅ Update progress bar
+  songAudio.addEventListener("timeupdate", () => {
+    if (!songAudio.paused) {
+      progressBar.value = songAudio.currentTime;
+    }
+  });
 
-    playPauseBtn.addEventListener("click", togglePlayPause);
+  songAudio.addEventListener("loadedmetadata", () => {
+    progressBar.max = songAudio.duration;
+  });
 
-  audioPlayer.addEventListener("ended", () => {
-  currentSongIndex++;
-  if (currentSongIndex >= songs.length) currentSongIndex = 0;
-  audioPlayer.src = songs[currentSongIndex];
-  audioPlayer.play();
-});
+  progressBar.addEventListener("input", () => {
+    songAudio.currentTime = progressBar.value;
+  });
 
-  song.addEventListener("ended", () => {
-  currentSongIndex = (currentSongIndex + 1) % playlist.length;
-  loadAndPlaySong(currentSongIndex);
-});
+  progressBar.addEventListener("change", () => {
+    playSong();
+  });
 
-  audioPlayer.addEventListener("ended", () => {
-  currentSong = (currentSong + 1) % playlist.length;
-  playSong(currentSong);
-});
+  forwardBtn.addEventListener("click", () => {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    loadSong(currentSongIndex);
+    playSong();
+    swiper.slideTo(currentSongIndex);
+  });
+
+  backwardBtn.addEventListener("click", () => {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    loadSong(currentSongIndex);
+    playSong();
+    swiper.slideTo(currentSongIndex);
+  });
+
+  // ✅ Auto-play next song when current ends
+  songAudio.addEventListener("ended", () => {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    loadSong(currentSongIndex);
+    playSong();
+    swiper.slideTo(currentSongIndex);
+  });
+
+  function initSwiper() {
+    swiper = new Swiper(".swiper", {
+      effect: "coverflow",
+      centeredSlides: true,
+      initialSlide: currentSongIndex,
+      slidesPerView: "auto",
+      allowTouchMove: true,
+      spaceBetween: 40,
+      coverflowEffect: {
+        rotate: 25,
+        stretch: 0,
+        depth: 50,
+        modifier: 1,
+        slideShadows: false,
+      },
+    });
+  }
+
+  window.onload = () => {
+    createSlides();
+    initSwiper();
+    loadSong(currentSongIndex);
+    playSong(); // Start with middle song
+  };
+
+  playPauseBtn.addEventListener("click", togglePlayPause);
 
   </script>
   
