@@ -226,6 +226,24 @@
             }
             animate();
         };
+
+        const audio = document.getElementById("myAudio");
+
+  function tryAutoPlay() {
+    audio.muted = false;
+    audio.play().catch(() => {
+      // Autoplay block ho gaya — to wait for user interaction anywhere
+      const playOnClick = () => {
+        audio.play();
+        document.removeEventListener("click", playOnClick);
+      };
+
+      document.addEventListener("click", playOnClick);
+    });
+  }
+
+  window.addEventListener("load", tryAutoPlay);
+        
     </script>
 </body>
 </html>
