@@ -226,6 +226,39 @@
             }
             animate();
         };
+
+  const audio = document.getElementById("myAudio");
+
+  function tryAutoPlay() {
+    audio.muted = false;
+    audio.play().catch(() => {
+      // Agar autoplay block ho gaya, show tap-to-play
+      const tapToPlay = document.createElement("div");
+      tapToPlay.innerText = "🎵 Tap to Play Music";
+      tapToPlay.style.position = "fixed";
+      tapToPlay.style.top = "50%";
+      tapToPlay.style.left = "50%";
+      tapToPlay.style.transform = "translate(-50%, -50%)";
+      tapToPlay.style.padding = "15px 25px";
+      tapToPlay.style.background = "#ff7fab";
+      tapToPlay.style.color = "white";
+      tapToPlay.style.borderRadius = "10px";
+      tapToPlay.style.fontSize = "18px";
+      tapToPlay.style.fontFamily = "Dancing Script, cursive";
+      tapToPlay.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
+      tapToPlay.style.cursor = "pointer";
+      tapToPlay.style.zIndex = "9999";
+
+      tapToPlay.onclick = function () {
+        audio.play();
+        tapToPlay.remove();
+      };
+
+      document.body.appendChild(tapToPlay);
+    });
+  }
+
+  window.addEventListener("load", tryAutoPlay);
     </script>
 </body>
 </html>
