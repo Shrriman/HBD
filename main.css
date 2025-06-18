@@ -51,13 +51,13 @@
     text-align: center;
     -webkit-box-shadow: 0 0 8px #fff;
             box-shadow: 0 0 8px #fff;
-    -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0005);
+    -webkit-box-reflect: below 0px linear-gradient(transparent, transparent, #0005);
   }
   
   #drag-container img:hover, #drag-container video:hover {
     -webkit-box-shadow: 0 0 15px #fffd;
             box-shadow: 0 0 15px #fffd;
-    -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0007);
+    -webkit-box-reflect: below 0px linear-gradient(transparent, transparent, #0007);
   }
   
   #drag-container p {
